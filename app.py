@@ -1,9 +1,14 @@
-from http.server import HTTPServer, SimpleHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler, HTTPServer
+import os
 
-HOST = "0.0.0.0"
-PORT = 8000
+class Handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-type", "text/plain")
+        self.end_headers()
+        self.wfile.write(b"Hello from Localhost!")
 
-server = HTTPServer((HOST, PORT), SimpleHTTPRequestHandler)
+port = int(os.environ.get("PORT", "8080"))
 
-print(f"Serving on http://{HOST}:{PORT}")
+server = HTTPServer(("0.0.0.0", port), Handler)
 server.serve_forever()
